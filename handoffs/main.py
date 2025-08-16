@@ -22,8 +22,8 @@ async def main(message: cl.message):
     
     tri_agent = Agent(
         name = "Triage Agent",
-        instructions =  "You are a helpdesk agent. "
-        "If the user asks about booking, hand off to the Booking agent. "
+        instructions =  "You are a helpdesk agent."
+        "If the user asks about booking, hand off to the Booking agent."
         "If about refunds, hand off to the Refund agent.",
         model = "gpt-4o-mini",
         handoffs = [booking_agent, refund_agent]
