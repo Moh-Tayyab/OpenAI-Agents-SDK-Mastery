@@ -1,3 +1,4 @@
+from multiprocessing import context
 from agents import Agent, RunHooks, Runner, handoff
 import asyncio
 import os
@@ -5,26 +6,29 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class MyRunnerHook(RunHooks):
-    async def on_run_start(self, context, config):
+    async def on_run_start(self, config):
         print(f"Run started with config: {config}")
 
     async def on_run_end(self, context, result):
         print(f"Run ended with final output: {result.final_output}")
 
     async def on_agent_start(self, context, input):
-        print(f"Agent {context.agent.name} started with input: {input}")
+        print(f"Agent started with input: {input}")
+        print(f"Context info: {context}")
 
     async def on_agent_end(self, context, result):
-        print(f"Agent {context.agent.name} ended with output: {result.output}")
+        print(f"Agent ended with output: {result.output}")
+        print(f"Context info: {context}")
 
-    async def on_tool_start(self, context, input):
-        print(f"Tool {context.tool.name} started with input: {input}")
+    async def on_tool_start(self, tool, input):
+        print(f"Tool {tool.name} started with input: {input}")
 
-    async def on_tool_end(self, context, output):
-        print(f"Tool {context.tool.name} ended with result: {output}")
+    async def on_tool_end(self, tool, output):
+        print(f"Tool {tool.name} ended with result: {output}")
 
-    async def on_handoff(self, context, to_agent, input):
-        print(f"Handoff from {context.agent.name} to {to_agent.name} with input: {input}")
+    async def on_handoff(self, context=None, from_agent=None, to_agent=None, input=None):
+        print(f"Handoff from {from_agent.name} to {to_agent.name} with input: {input}")
+        print(f"Context info: {context}")
 
 async def main():
     API_KEY = os.getenv("OPENAI_API_KEY")
