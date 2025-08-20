@@ -1,34 +1,34 @@
-from multiprocessing import context
-from agents import Agent, RunHooks, Runner, handoff
+#from multiprocessing import context
+from agents import Agent, RunHooks, Runner
 import asyncio
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
 class MyRunnerHook(RunHooks):
-    async def on_run_start(self, config):
-        print(f"Run started with config: {config}")
+    async def on_run_start(self, config) -> str:
+        print(f"Run started with config:")
 
-    async def on_run_end(self, context, result):
-        print(f"Run ended with final output: {result.final_output}")
+    async def on_run_end(self, context, result) -> str:
+        print(f"Run ended with final output:")
 
-    async def on_agent_start(self, context, input):
-        print(f"Agent started with input: {input}")
-        print(f"Context info: {context}")
+    async def on_agent_start(self, context, input) -> str:
+        print(f"Agent started with input: ")
+        print(f"Context info: ")
 
-    async def on_agent_end(self, context, result):
-        print(f"Agent ended with output: {result.output}")
-        print(f"Context info: {context}")
+    async def on_agent_end(self, context, result) -> str:
+        print(f"Agent ended with output: ")
+        print(f"Context info: ")
 
-    async def on_tool_start(self, tool, input):
-        print(f"Tool {tool.name} started with input: {input}")
+    async def on_tool_start(self, tool, input) -> str:
+        print(f"Tool started with input: ")
 
-    async def on_tool_end(self, tool, output):
-        print(f"Tool {tool.name} ended with result: {output}")
+    async def on_tool_end(self, tool, output) -> str:
+        print(f"Tool ended with result: ")
 
-    async def on_handoff(self, context=None, from_agent=None, to_agent=None, input=None):
-        print(f"Handoff from {from_agent.name} to {to_agent.name} with input: {input}")
-        print(f"Context info: {context}")
+    async def on_handoff(self, context=None, from_agent=None, to_agent=None, input=None) -> str:
+        print(f"Handoff from to with input: ")
+        print(f"Context info: ")
 
 async def main():
     API_KEY = os.getenv("OPENAI_API_KEY")
