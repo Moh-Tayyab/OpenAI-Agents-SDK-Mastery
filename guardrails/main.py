@@ -10,7 +10,7 @@ from agents import (
 
 class bank_info(BaseModel):
     account_num: str
-    rout_num: str
+    rout_num: int
     amount: float
 
 # Global bank agent definition
@@ -58,3 +58,8 @@ async def test_bank_info():
     except InputGuardrailTripwireTriggered as e:
      print("Tripwire triggered:", e)
      print("Guardrail output:", e.guardrail_output.output_info)
+     
+     
+     
+     
+     
