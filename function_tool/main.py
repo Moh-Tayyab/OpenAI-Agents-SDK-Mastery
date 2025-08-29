@@ -40,6 +40,7 @@ async def main():
         instructions="You can tell a joke or tell the time depending on user input.",
         model="gpt-4o-mini",
         tools=[time_tool_obj, joke_tool_obj],
+        tool_use_behavior = "stop"
     )
     
     querry=input("Please choice one option u know current time or tech joke: ")
@@ -57,3 +58,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
+
