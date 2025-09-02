@@ -19,10 +19,14 @@ async def main():
     # if not API_KEY:
     #     raise ValueError("OpenAI Api key not found.")
     
-    def my_dynamic_instruction(context: RunContextWrapper, agent: Agent) -> str:
+    class Is_math_homework() 
+    reasoning:str
+    yes_or_no:bool
+    
+    async def my_dynamic_instruction(context: RunContextWrapper, agent: Agent) -> str:
         # Direct string input access
-        user_text = str(getattr(context, "input", []))
-        if "beginner" in user_text:
+        user_text = str(getattr(context, "input", [])) or []
+        if "Math_Home_Work" in Is_math_homework:
             return f"You are {agent.name}, explain Python like I'm a complete beginner."
         elif "advanced" in user_text:
             return f"You are {agent.name}, explain with advanced technical details."
@@ -39,7 +43,7 @@ async def main():
     
     querry= input("Ask me anything about python programming: ")
     result= await Runner.run(
-        starting_agent=agent, 
+        agent, 
         input= querry
     )
     print(result.final_output)
