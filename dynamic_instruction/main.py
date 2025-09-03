@@ -19,9 +19,9 @@ async def main():
     # if not API_KEY:
     #     raise ValueError("OpenAI Api key not found.")
     
-    class Is_math_homework() 
-    reasoning:str
-    yes_or_no:bool
+    class Is_math_homework:
+        reasoning: str
+        yes_or_no: bool
     
     async def my_dynamic_instruction(context: RunContextWrapper, agent: Agent) -> str:
         # Direct string input access
