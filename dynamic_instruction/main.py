@@ -1,4 +1,4 @@
-from agents import Agent, Runner, RunContextWrapper, AsyncOpenAI, OpenAIChatCompletionsModel
+from agents import Agent, Runner, RunContextWrapper, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings
 import asyncio
 from dotenv import load_dotenv
 import os
@@ -38,7 +38,7 @@ async def main():
         name="Python Helper",
         instructions=my_dynamic_instruction,
         model=model,
-        #model_settings=ModelSettings(temparture=0.1, max_tokens=100)
+        model_settings=ModelSettings(temparture=0.1, max_tokens=100)
     )  
     
     querry= input("Ask me anything about python programming: ")
