@@ -1,6 +1,7 @@
-from agents import Agent, Runner, RunContextWrapper, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings
+from agents import Agent, Runner, RunContextWrapper, AsyncOpenAI, OpenAIChatCompletionsModel
 import asyncio
 from dotenv import load_dotenv
+from agents.run import RunConfig
 import os
 
 load_dotenv()
@@ -19,32 +20,39 @@ async def main():
     # if not API_KEY:
     #     raise ValueError("OpenAI Api key not found.")
     
-    class Is_math_homework:
+    config=RunConfig(
+        model=model,
+        model_provider=client
+    )
+    class PythonUser:
         reasoning: str
         yes_or_no: bool
     
-    async def my_dynamic_instruction(context: RunContextWrapper, agent: Agent) -> str:
+    async def my_dynamic_instruction(wrapper: RunContextWrapper[PythonUser], agent: Agent) -> str:
         # Direct string input access
-        user_text = str(getattr(context, "input", [])) or []
-        if "Math_Home_Work" in Is_math_homework:
+        user_text = str(getattr(wrapper.context, "input", [])) or []
+        if "Math_Home_Work" in user_text:
             return f"You are {agent.name}, explain Python like I'm a complete beginner."
         elif "advanced" in user_text:
             return f"You are {agent.name}, explain with advanced technical details."
         else:
             return f"You are {agent.name}, explain Python programming clearly and concisely."
 
-     
+
+    user=PythonUser()
     agent=Agent(
         name="Python Helper",
-        instructions=my_dynamic_instruction,
+        instructions=user.my_dynamic_instruction(),
         model=model,
-        model_settings=ModelSettings(temparture=0.1, max_tokens=100)
+        #model_settings=ModelSettings(temparture=0.1, max_tokens=100)
     )  
     
     querry= input("Ask me anything about python programming: ")
     result= await Runner.run(
         agent, 
-        input= querry
+        input= querry,
+        config=config,
+        context=user
     )
     print(result.final_output)
     
