@@ -23,18 +23,38 @@ config = RunConfig(
     #tracing_disable= True
 )
 
+@dataclass
+class UserInfo:
+    name: str
+    age: int
+    email: str
+    def dynamic_instruction(self) -> str:
+        #print("context in dynamic instruction:", wrapper.context)
+        return f"python helper assistant? name: {self.name} and age = {self.age}"
+
 @function_tool
-def user_info():
+def browse(wrapper: RunContextWrapper[UserInfo]) -> str:
+    """search the web for user"""
+    print("context:", wrapper.context)
     return f"user info"
+
+user = UserInfo(name="Tayyab", age=22, email="abc@gmail.com")
+
+# def dynamic_instruction(wrapper: RunContextWrapper, agent: Agent) -> str:
+#     print("context in dynamic instruction:", wrapper.context)
+#     return f"python helper assistant? agent name: {agent.name} and username = {wrapper.context.name}"
+    
 agent=Agent(
-    name="helping_assistant",
-    instructions="you are a assistant to help user."
-)
+    name="python_helper",
+    instructions=user.dynamic_instruction(),
+    tools=[browse]
+) 
+
 result = Runner.run_sync(
  starting_agent=agent,
- input="hi",
+ input="what is user name and age?",
  run_config=config,
- context={"name": "Tayyab"}
+ context=user
 )
 
 print(result.final_output)
