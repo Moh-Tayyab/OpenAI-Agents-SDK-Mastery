@@ -24,7 +24,7 @@ async def main():
         model_provider=client
         )
     
-    @dataclass
+    @dataclass  #yh data llm ky pass nhi jy ga
     class TravelUser:
         name: str
         #destination: str
@@ -32,7 +32,7 @@ async def main():
         passport_num: int
     
     @function_tool
-    def book_ticket(wrapper: RunContextWrapper[TravelUser], destination: str) -> str:
+    def book_ticket(wrapper: RunContextWrapper[TravelUser], destination: str) -> str: # yh jo context ha wo wrapper ky zrye ly ra ha or us ky zrye hum user ky attributes ko access kr rhy ha or yh RunContextWrapper ky zrye ho ra ha or wo llm ko bol rha hai is ke tension tum nhi lo
         user=wrapper.context
         """Search for flights to a destination on a specific date."""
         return f"Booking flight for {user.name} (Passport: {user.passport_num}) to {destination} with a preference for WINDOW seats."
