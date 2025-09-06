@@ -16,10 +16,7 @@ async def main():
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
     )
     model = OpenAIChatCompletionsModel(model=MODEL_NAME, openai_client=client)
-    # API_KEY = os.getenv("OPENAI_API_KEY")
-    # if not API_KEY:
-    #     raise ValueError("OpenAI Api key not found.")
-    
+
     config=RunConfig(
         model=model,
         model_provider=client
@@ -27,33 +24,38 @@ async def main():
     class PythonUser:
         reasoning: str
         yes_or_no: bool
+        def __init__(self, query: str = "") -> str:
+          self.query = query
     
+     #✅ dynamic instruction must accept (context, agent)
     async def my_dynamic_instruction(wrapper: RunContextWrapper[PythonUser], agent: Agent) -> str:
-        # Direct string input access
-        user_text = str(getattr(wrapper.context, "input", [])) or []
-        if "Math_Home_Work" in user_text:
+        # ✅ Get user input directly
+        user_text = getattr(wrapper.context, "query", "")
+        if "beginner" in user_text:
             return f"You are {agent.name}, explain Python like I'm a complete beginner."
+        elif "intermediate" in user_text:
+            return f"You are {agent.name}, explain with moderate technical details."
         elif "advanced" in user_text:
             return f"You are {agent.name}, explain with advanced technical details."
         else:
             return f"You are {agent.name}, explain Python programming clearly and concisely."
 
 
-    user=PythonUser()
     agent=Agent(
         name="Python Helper",
-        instructions=user.my_dynamic_instruction(),
+        instructions=my_dynamic_instruction, #✅ passing function reference not calling it
         model=model,
-        #model_settings=ModelSettings(temparture=0.1, max_tokens=100)
     )  
     
-    querry= input("Ask me anything about python programming: ")
-    result= await Runner.run(
+    query= input("Ask me anything about python programming: ")
+    user = PythonUser(query=query)
+    result=await Runner.run(
         agent, 
-        input= querry,
-        config=config,
+        input= query,
+        run_config=config,
         context=user
     )
+    
     print(result.final_output)
     
 if __name__ == "__main__":
