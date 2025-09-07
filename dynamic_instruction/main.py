@@ -22,8 +22,8 @@ async def main():
         model_provider=client
     )
     class PythonUser:
-        reasoning: str
-        yes_or_no: bool
+        # reasoning: str
+        # yes_or_no: bool
         def __init__(self, query: str = "") -> str:
           self.query = query
     
