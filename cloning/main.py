@@ -1,4 +1,4 @@
-from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionModels
+from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel
 from dotenv import load_dotenv
 import os
 import asyncio
@@ -16,20 +16,23 @@ async def main():
           base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
      )   
     
-    model=OpenAIChatCompletionModels(
-        model=model,
+    model=OpenAIChatCompletionsModel(
+        model="gemini-2.0-flash",
         openai_client=client
     )
+    @function_tool
+    def clean_data():
+        return f"cleaning the data"
     
     agent=Agent(
-        name="",
-        instructions="",
+        name="data checker",
+        instructions="you are expert ai agent, your responsibilities to check data and give summary.",
         
     )
     
-    result= await Runner.run_sync(
+    result= await Runner.run(
         starting_agent=agent,
-        input=""
+        input="summarize and cleaning data"
     )
       
     print(result.final_output)
