@@ -24,14 +24,22 @@ async def main():
     def clean_data():
         return f"cleaning the data"
     
-    agent=Agent(
+    @function_tool
+    def summerize_data():
+        return f"summerizing the data"
+    
+    agent1=Agent(
         name="data checker",
         instructions="you are expert ai agent, your responsibilities to check data and give summary.",
-        
+        tools=[clean_data]
+    )
+    
+    agent2=agent1.clone(
+        tools=[summerize_data]
     )
     
     result= await Runner.run(
-        starting_agent=agent,
+        starting_agent=agent1,
         input="summarize and cleaning data"
     )
       
