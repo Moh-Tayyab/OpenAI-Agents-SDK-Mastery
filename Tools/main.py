@@ -31,7 +31,7 @@ async def main():
     math_agent = Agent(
         name = "math assistant",
         instructions = "Math helpful assistant. you are math teacher any user query simple, easy and straight forward way.",
-        tools = [geometeric_tool, algebra_tool ]
+        tools = [geometeric_tool, algebra_tool]
     )
     bio_agent = Agent(
         name = "bio assistant",
