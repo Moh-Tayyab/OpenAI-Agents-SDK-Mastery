@@ -16,7 +16,7 @@ load_dotenv()
 
 async def main():
     gemini_key = os.getenv("GEMINI_API_KEY")
-    Model = "gemini/gemini-2.0-flash"
+    #Model = "gemini/gemini-2.0-flash"
     if not gemini_key:
         raise ValueError("api key not found.")
     
