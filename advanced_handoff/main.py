@@ -3,7 +3,7 @@ from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, funct
 from dotenv import load_dotenv
 from agents.run import RunConfig
 #from agents.extensions.models.litellm_model import LitellmModel
-from agents.extensions.visualization import draw_graph
+#from agents.extensions.visualization import draw_graph
 import os 
 import asyncio
 #from agents import enable_verbose_stdout_logging
@@ -30,81 +30,70 @@ async def main():
         model=model,
         model_provider=client
     )
-    
     @function_tool
     def post_on_linkedin() -> str:
-        """post on linkedin """
-        return f"post successfully upload on linkedin"
+        """Post content on LinkedIn"""
+        return "Content successfully posted on LinkedIn"
     
     @function_tool
     def find_job_on_linkedin() -> str:
-        """find and search a remote job of frontend developer on linkedin job section
-        """
-        return f"im try to find perfect job for you"
+        """Search for remote frontend developer jobs on LinkedIn"""
+        return "Searching for suitable frontend developer positions"
     
-    # Yahan tum handoff() ko function ke through dynamically call kar rahe ho.
-    # is ka aik yh bhi benifit hai ky hum human in loop work kar sakty hein
     @function_tool
-    def route_query(query):
+    def route_query(query: str) -> str:
+        """Route the query to appropriate assistant based on keywords"""
         if "linkedin" in query.lower():
-        #yh aider custom handoff() ka concept use ho rha hai
-          return handoff(
-              #name = "LinkedIn Assistant", instructions = "You are a helpfull assitant that help to post content on linkedin.", 
-              agent=linkedin_agent,
-              on_handoff=on_handoff,
-              tool_name_overide=search_job
-              )
-      
+            return handoff(
+                agent=linkedin_agent,
+                on_handoff=on_handoff
+            )
         elif "whatsapp" in query.lower():
             return handoff(
-                #name = "Whatsapp Assistant", instructions = "You are a helpfull assistant to handle my personal whatsapp", 
                 agent=whatsapp_agent,
-                on_handoff=on_handoff)
-        else:
-            return "I can’t find a suitable assistant."
-        
-        #basic hands off
-    linkedin_agent = Agent(
-        name = "LinkedIn Assistant",
-        instructions = "You only solve query about linkedin.",
-        tools=[post_on_linkedin, find_job_on_linkedin]
-)
+                on_handoff=on_handoff
+            )
+        return "Sorry, I can't find a suitable assistant for your query."
     
-    whatsapp_agent = Agent(
-        name = "Whatsapp Assistant",
-        instructions = "You only solve query about whatsapp"
+    linkedin_agent = Agent(
+        name="LinkedIn Assistant",
+        instructions="""You are a LinkedIn assistant that helps with LinkedIn-specific tasks.
+        Your responsibilities:
+        1. Post content on LinkedIn when requested
+        2. Search for remote frontend developer jobs
+        Only handle LinkedIn-related queries and use the appropriate tools.""",
+        tools=[post_on_linkedin, find_job_on_linkedin]
     )
     
-    def on_handoff(agent: Agent, ctx: RunContextWrapper[None]):
-        agent_name = agent.name
-        print("*"*10)
-        print(f"Handoff agent name: {agent_name}")
-        print("*"*10)
+    whatsapp_agent = Agent(
+        name="WhatsApp Assistant",
+        instructions="You are a WhatsApp assistant that handles WhatsApp-related queries and operations."
+    )
+    
+    def on_handoff(agent: Agent, ctx: RunContextWrapper[None]) -> None:
+        """Callback function when handoff occurs"""
+        print("=" * 40)
+        print(f"Handoff to: {agent.name}")
+        print("=" * 40)
     
     triage_agent = Agent(
         name="Manager Assistant",
-        instructions = ("""
-        You are a manager. You must never answer directly.
-        If query is about LinkedIn → delegate to LinkedIn Assistant.
-        If query is about WhatsApp → delegate to WhatsApp Assistant.
-        """
-        ),
-        #model = LitellmModel(model=Model, api_key=gemini_key),
-        tools = [route_query],
-        #basic handoffs of is mein llm khud decide karta hai kis ko handoff karna hai 
-    #      handoffs=[
-    #         handoff(linkedin_agent, on_handoff=lambda ctx: on_handoff(linkedin_agent, ctx)),
-    #         handoff(whatsapp_agent, on_handoff=lambda ctx: on_handoff(whatsapp_agent, ctx))
-    # ],
+        instructions="""You are a task routing manager.
+        Your role is to analyze queries and delegate them to specialized assistants:
+        - LinkedIn queries → LinkedIn Assistant
+        - WhatsApp queries → WhatsApp Assistant
+        Never answer queries directly, always delegate.""",
+        tools=[route_query]
     )
-    query = input("user query: ")
+    
+    query = input("Please enter your query: ")
     result = await Runner.run(
         starting_agent = triage_agent,
         input = query,
         run_config = config
     )
     
-    print(draw_graph(result.final_output))
+    print(result.final_output)
     
 if __name__ == "__main__":
     asyncio.run(main())    
