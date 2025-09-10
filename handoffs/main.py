@@ -1,4 +1,4 @@
-from agents import Runner, Agent, OpenAIChatCompletionsModel, AsyncOpenAI
+from agents import Runner, Agent, OpenAIChatCompletionsModel, AsyncOpenAI, handoff
 import asyncio
 import os
 from dotenv import load_dotenv
@@ -37,7 +37,7 @@ async def main():
         "If the user asks about booking, hand off to the Booking agent."
         "If about refunds, hand off to the Refund agent.",
         model = model,
-        handoffs=[booking_agent, refund_agent]
+        handoffs=[booking_agent, handoff(refund_agent)]
     )
     query = input("user query: ")
     result = await Runner.run(
