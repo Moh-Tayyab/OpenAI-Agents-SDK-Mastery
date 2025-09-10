@@ -3,6 +3,7 @@ from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, funct
 from dotenv import load_dotenv
 from agents.run import RunConfig
 #from agents.extensions.models.litellm_model import LitellmModel
+from agents.extensions.visualization import draw_graph
 import os 
 import asyncio
 #from agents import enable_verbose_stdout_logging
@@ -30,26 +31,49 @@ async def main():
         model_provider=client
     )
     
-    # @function_tool
-    # def route_query(query):
-    #     if "linkedin" in query.lower():
-    #     #yh aider custom handoff ka concept use ho rha hai
-    #       return handoff(name = "LinkedIn Assistant", instructions = "You are a helpfull assitant that help to post content on linkedin.")
-    #     elif "whatsapp" in query.lower():
-    #         return handoff(name = "Whatsapp Assistant", instructions = "You are a helpfull assistant to handle my personal whatsapp",)
-    #     else:
-    #         return "I can’t find a suitable assistant."
+    @function_tool
+    def post_on_linkedin() -> str:
+        """post on linkedin """
+        return f"post successfully upload on linkedin"
+    
+    @function_tool
+    def find_job_on_linkedin() -> str:
+        """find and search a remote job of frontend developer on linkedin job section
+        """
+        return f"im try to find perfect job for you"
+    
+    # Yahan tum handoff() ko function ke through dynamically call kar rahe ho.
+    # is ka aik yh bhi benifit hai ky hum human in loop work kar sakty hein
+    @function_tool
+    def route_query(query):
+        if "linkedin" in query.lower():
+        #yh aider custom handoff() ka concept use ho rha hai
+          return handoff(
+              #name = "LinkedIn Assistant", instructions = "You are a helpfull assitant that help to post content on linkedin.", 
+              agent=linkedin_agent,
+              on_handoff=on_handoff,
+              tool_name_overide=search_job
+              )
+      
+        elif "whatsapp" in query.lower():
+            return handoff(
+                #name = "Whatsapp Assistant", instructions = "You are a helpfull assistant to handle my personal whatsapp", 
+                agent=whatsapp_agent,
+                on_handoff=on_handoff)
+        else:
+            return "I can’t find a suitable assistant."
         
         #basic hands off
-    # linkedin_agent = Agent(
-    #     name = "LinkedIn Assistant",
-    #     instructions = "You only solve query about linkedin."
-    # )
+    linkedin_agent = Agent(
+        name = "LinkedIn Assistant",
+        instructions = "You only solve query about linkedin.",
+        tools=[post_on_linkedin, find_job_on_linkedin]
+)
     
-    # whatsapp_agent = Agent(
-    #     name = "Whatsapp Assistant",
-    #     instructions = "You only solve query about whatsapp"
-    # )
+    whatsapp_agent = Agent(
+        name = "Whatsapp Assistant",
+        instructions = "You only solve query about whatsapp"
+    )
     
     def on_handoff(agent: Agent, ctx: RunContextWrapper[None]):
         agent_name = agent.name
@@ -66,11 +90,12 @@ async def main():
         """
         ),
         #model = LitellmModel(model=Model, api_key=gemini_key),
-        #tools = [route_query],
-         handoffs=[
-            handoff(linkedin_agent, on_handoff=lambda ctx: on_handoff(linkedin_agent, ctx)),
-            handoff(whatsapp_agent, on_handoff=lambda ctx: on_handoff(whatsapp_agent, ctx))
-    ],
+        tools = [route_query],
+        #basic handoffs of is mein llm khud decide karta hai kis ko handoff karna hai 
+    #      handoffs=[
+    #         handoff(linkedin_agent, on_handoff=lambda ctx: on_handoff(linkedin_agent, ctx)),
+    #         handoff(whatsapp_agent, on_handoff=lambda ctx: on_handoff(whatsapp_agent, ctx))
+    # ],
     )
     query = input("user query: ")
     result = await Runner.run(
@@ -79,7 +104,7 @@ async def main():
         run_config = config
     )
     
-    print(result.final_output)
+    print(draw_graph(result.final_output))
     
 if __name__ == "__main__":
     asyncio.run(main())    
