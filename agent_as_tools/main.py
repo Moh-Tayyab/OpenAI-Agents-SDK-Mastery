@@ -31,30 +31,33 @@ config = RunConfig(
 # Translator Agent
 translator_agent = Agent(
 	name="translator_agent",
-	instructions="You are a helpful translator. Translate given text into the target language."
+	instructions="Translate what the user says into Spanish. Only output Spanish.",
+	model=model
 )
 
 # Summarizer Agent
 summarizer_agent = Agent(
 	name="summarizer_agent",
-	instructions="You are a summarization agent. Summarize long text clearly and concisely."
+	instructions="Summarize the given text in 2 short bullet points.",
+	model=model
 )
 
 # Knowledge Agent
 knowledge_agent = Agent(
 	name="knowledge_agent",
-	instructions="You are a knowledge assistant. Answer factual questions accurately."
+	instructions="You are a knowledge assistant. Answer factual questions accurately.",
+	model=model
 )
 
 translate_to_spanish = translator_agent.as_tool(
 	tool_name="translator",
-	tool_description="Translate text into a target language."
+	tool_description="Translate user text to Spanish."
 )
 summarize_text = summarizer_agent.as_tool(
 	tool_name="summarizer",
-	tool_description="Summarize long text."
+	tool_description="Summarize text in 2 bullets."
 )
-knowledge = knowledge_agent.as_tool(
+factual_q = knowledge_agent.as_tool(
 	tool_name="knowledge",
 	tool_description="Answer factual questions."
 )
@@ -66,7 +69,7 @@ main_agent = Agent(
 		"based on the user's request. Use translator for 'translate into', "
 		"summarizer for long text, and knowledge agent for factual questions."
 	),
-	tools=[translate_to_spanish, summarize_text, knowledge],
+	tools=[translate_to_spanish, summarize_text, factual_q],
 	model=model
 )
 async def main():
