@@ -11,7 +11,7 @@ import asyncio
 load_dotenv()
 
 #enable_verbose_stdout_logging()
-#set_tracing_disable(dissble=True)
+#set_tracing_disable(disabled=True)
 
 
 async def main():
