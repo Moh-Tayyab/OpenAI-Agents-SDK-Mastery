@@ -9,8 +9,10 @@ import asyncio
 load_dotenv()
 
 async def main():
-    # main coroutine placeholder; implement your logic here
-    pass
+   @function_tool
+   async def fetch_weather(location: dict[str, float]) -> str:
+       """Fetch the weather for a given location."""
+       return "sunny"
 
 if __name__ == "__main__":
     asyncio.run(main())
