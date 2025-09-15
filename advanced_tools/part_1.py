@@ -34,8 +34,8 @@ async def main():
 		return "sunny"
 	
 	agent = Agent(
-		name ="",
-		instructions = "",
+		name ="weather agent",
+		instructions = "you are weather, give information about weather only",
 		tools = [fetch_weather],
 		tool_use_behaviour =StopAtTools(stop_at_tools_names= [fetch_weather]) # aider mene required kr diye hai ky bas is tool ky baad stop yahni yh he final output ho ge.	
 	)
