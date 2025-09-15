@@ -1,4 +1,4 @@
-from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel
+from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel, tool_choice
 
 from dotenv import load_dotenv
 
@@ -35,9 +35,9 @@ async def main():
 	
 	agent = Agent(
 		name ="weather assistant",
-		instructions = "",
+		instructions = "you are helpful assistant help about weather",
 		tools = [fetch_weather],
-#		ToolUseBehavior= REQUIRED
+		ToolUseBehavior= tool_choice="Required"
 	)
 	
 	result = await Runner.run(
