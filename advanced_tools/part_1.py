@@ -15,7 +15,7 @@ async def main():
 	if not gemini_api:
 			raise ValueError("api key is not found.")
 	client=AsyncOpenAI(
-			api_key=gemini_key,
+			api_key=gemini_api,
 			base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 	)
 		
@@ -28,8 +28,8 @@ async def main():
 			model=model,
 			openai_client=client
 	)
-	@function_tool(name_override = "weather")    #name override
-	async def fetch_weather(location: dict[str, float]) -> str:
+	@function_tool
+	async def fetch_weather() -> str:
 		"""Fetch the weather for a given location."""
 		return "sunny"
 	

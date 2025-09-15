@@ -28,14 +28,14 @@ async def main():
 			model=model,
 			model_provider=client
 	)
-	@function_tool(name_override = "weather")    #name override
-	async def fetch_weather(location: dict[str, float]) -> str:
+	@function_tool
+	def fetch_weather(is_enabled = False) -> str:
 		"""Fetch the weather for a given location."""
 		return "sunny"
 	
 	agent = Agent(
 		name ="weather assistant",
-		instructions = "you are a helpfull assitant. solve query about",
+		instructions = "",
 		tools = [fetch_weather],
 #		ToolUseBehavior= REQUIRED
 	)
@@ -49,5 +49,5 @@ async def main():
 	print(result.final_output)
 
 if __name__ == "__main__":
-		asyncio.run(main())
+	asyncio.run(main())
 		
