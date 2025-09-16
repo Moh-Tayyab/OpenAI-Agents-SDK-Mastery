@@ -1,4 +1,4 @@
-# tool choice and is_enabled 
+# 2) tool_use_behavior and reset_tool_choice (what they do & why)
 from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings
 
 from dotenv import load_dotenv
@@ -29,17 +29,20 @@ async def main():
 			model=model,
 			model_provider=client
 	) 
-	@function_tool(is_enabled=False, name_override="weather")# on/off flag, agar False to agent cannot call that tool (useful for staged rollouts).
+	@function_tool()
 	def fetch_weather() -> str:
 		"""Fetch the weather for a given location."""
 		return "sunny"
+
 	
 	agent = Agent(
 		name ="weather assistant",
 		instructions = "you are helpful assistant help about weather",
 		tools = [fetch_weather],
-		model_settings = ModelSettings(
-		tool_choice="required" # ab hum na require kr diye hai jb bhi agent run ho ga tu tool call ho ga
+		model_settings=ModelSettings(
+		tool_use_behaviour="stop_on_first_tool",
+		reset_tool_choice=False
+		#tool_choice="required" # ab hum na require kr diye hai jb bhi agent run ho ga tu tool call ho ga
   )
 	)
 	
