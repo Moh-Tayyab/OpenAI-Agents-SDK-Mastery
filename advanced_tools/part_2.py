@@ -1,3 +1,4 @@
+# tool choice and is_enabled 
 from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel, tool_choice
 
 from dotenv import load_dotenv
@@ -11,7 +12,7 @@ import os
 load_dotenv()
 
 async def main():
-	gemini_api=os.getenv("GEMINI_API_KEY")
+	gemini_api= os.getenv("GEMINI_API_KEY")
 	if not gemini_api:
 			raise ValueError("api key is not found.")
 	client=AsyncOpenAI(
@@ -27,7 +28,7 @@ async def main():
 	config=RunConfig(
 			model=model,
 			model_provider=client
-	)
+	) 
 	@function_tool
 	def fetch_weather(is_enabled = False) -> str:
 		"""Fetch the weather for a given location."""
@@ -44,7 +45,6 @@ async def main():
 		starting_agent=agent,
 		input="hello",
 		run_config=config
-		
 	)
 	print(result.final_output)
 
