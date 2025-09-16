@@ -1,5 +1,4 @@
-# 2) tool_use_behavior and reset_tool_choice (what they do & why)
-from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings
+from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel, StopAtTools
 
 from dotenv import load_dotenv
 
@@ -28,27 +27,26 @@ async def main():
 	config=RunConfig(
 			model=model,
 			model_provider=client
-	) 
-	@function_tool()
+	)
+	@function_tool(is_enabled=True, description_override=" Fetch current weather data for a given city or location.") # on/off flag, agar False to agent cannot call that tool (useful for staged rollouts).
 	def fetch_weather() -> str:
 		"""Fetch the weather for a given location."""
 		return "sunny"
-
-	
+	@function_tool(name_override="news")
+	def get_news() -> str:
+		"""Fetch the latest news headlines for a specific topic and location.
+  """
+		return "A list of news headlines."
 	agent = Agent(
 		name ="weather assistant",
-		instructions = "you are helpful assistant help about weather",
-		tools = [fetch_weather],
-		model_settings=ModelSettings(
-		tool_use_behaviour="stop_on_first_tool",
-		reset_tool_choice=False
-		#tool_choice="required" # ab hum na require kr diye hai jb bhi agent run ho ga tu tool call ho ga
-  )
+		instructions = "You are a professional weather and news assistant.",
+		tools = [fetch_weather, get_news],
+		tool_use_behavior=StopAtTools(stop_at_tool_names=["fetch_weather"])# weather ka tool call karna ky baad ruk jy ga. or final output dy ga
 	)
-	
+	query=input("user query: ")
 	result = await Runner.run(
 		starting_agent=agent,
-		input="what is today weather in lahore",
+		input=query,
 		run_config=config
 	)
 	print(result.final_output)
