@@ -29,7 +29,7 @@ async def main():
 			model=model,
 			model_provider=client
 	) 
-	@function_tool(is_enabled=False, name_override="weather")
+	@function_tool(is_enabled=False, name_override="weather")# aider mene tool ko disable kr diye hai
 	def fetch_weather() -> str:
 		"""Fetch the weather for a given location."""
 		return "sunny"
