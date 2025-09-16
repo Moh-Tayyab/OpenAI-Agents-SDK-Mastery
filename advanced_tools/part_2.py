@@ -1,5 +1,5 @@
 # tool choice and is_enabled 
-from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel, tool_choice
+from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings
 
 from dotenv import load_dotenv
 
@@ -29,8 +29,8 @@ async def main():
 			model=model,
 			model_provider=client
 	) 
-	@function_tool
-	def fetch_weather(is_enabled = False) -> str:
+	@function_tool(is_enabled=False, name_override="weather")
+	def fetch_weather() -> str:
 		"""Fetch the weather for a given location."""
 		return "sunny"
 	
@@ -38,12 +38,14 @@ async def main():
 		name ="weather assistant",
 		instructions = "you are helpful assistant help about weather",
 		tools = [fetch_weather],
-		ToolUseBehavior= tool_choice="Required"
+		model_settings = ModelSettings(
+		tool_choice="required" # ab hum na require kr diye hai jb bhi agent run ho ga tu tool call ho ga
+  )
 	)
 	
 	result = await Runner.run(
 		starting_agent=agent,
-		input="hello",
+		input="what is today weather in lahore",
 		run_config=config
 	)
 	print(result.final_output)
