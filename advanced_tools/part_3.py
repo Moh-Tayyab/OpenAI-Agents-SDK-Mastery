@@ -39,7 +39,7 @@ async def main():
   """
 		return "A list of news headlines."
 	agent = Agent(
-		name ="weather assistant",
+		name ="WeatherNewsAgent",
 		instructions = "You are a professional weather and news assistant.",
 		tools = [fetch_weather, get_news],
 		tool_use_behavior=StopAtTools(stop_at_tool_names=["fetch_weather"])# weather ka tool call karna ky baad ruk jy ga. or final output dy ga

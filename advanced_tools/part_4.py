@@ -52,7 +52,7 @@ async def main():
 			return {"transaction_id": transaction_id, "amount_charged": amount}
 
 	agent = Agent(
-		name ="weather assistant",
+		name ="payment assistant",
 		instructions="If the user requests to charge a credit card or make a payment, call the ChargeCard tool with the provided card number and amount.",
 		tools = [charge_credit_card],
 		#tool_use_behavior=StopAtTools(stop_at_tool_names=["fetch_weather"])# weather ka tool call karna ky baad ruk jy ga. or final output dy ga

@@ -30,8 +30,9 @@ async def main():
     
     agent1=Agent(
         name="data checker",
-        instructions="you are expert ai agent, your responsibilities to check data and give summary.",
-        tools=[clean_data]
+        instructions="you are expert AI agent, your responsibilities to check data and summerizing.",
+        tools=[clean_data],
+        model=model
     )
     
     agent2=agent1.clone(
@@ -39,7 +40,7 @@ async def main():
     )
     
     result= await Runner.run(
-        starting_agent=agent1,
+        starting_agent=agent2,
         input="summarize and cleaning data"
     )
       
