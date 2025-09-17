@@ -1,4 +1,4 @@
-# stop at first tool 
+# stop at first tool concept.
 from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel, StopAtTools
 
 from dotenv import load_dotenv

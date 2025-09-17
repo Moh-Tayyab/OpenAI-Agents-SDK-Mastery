@@ -1,3 +1,4 @@
+# tool name_override. description_override, s_enabled and tool_use_behavior concept
 from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel, StopAtTools
 
 from dotenv import load_dotenv
