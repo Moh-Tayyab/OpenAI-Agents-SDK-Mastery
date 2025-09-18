@@ -72,7 +72,7 @@ async def main():
 		tools = [calculator, fetch_weather],
 		model_settings=ModelSettings(
 			tool_choice="auto",
-			parallel_tool_calls=True, #Yeh feature sirf kuch OpenAI models. Google Gemini API is ko sport nhi karti.
+			parallel_tool_calls=True, # Yeh feature sirf OpenAI models mein work karta. Google Gemini API is ko sport nhi karti.
 			#include_usage=True,
 			temperature=0.2,   # low randomness
             top_p=0.9,         # nucleus sampling

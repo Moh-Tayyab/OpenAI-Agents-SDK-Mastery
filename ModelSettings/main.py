@@ -1,4 +1,4 @@
-# modelsetting tool_use_behavior, 
+# modelsetting tool_use_behavior top_p, top_k, 
 from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings, StopAtTools, enable_verbose_stdout_logging
 from dotenv import load_dotenv
 from agents.run import RunConfig
