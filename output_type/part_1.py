@@ -1,5 +1,6 @@
-#output guard
-from pydantic import BaseModel, Field
+# any output type
+from pydantic import BaseModel
+from typing import TypedDict
 from dotenv import load_dotenv
 import asyncio, os
 from agents import (
@@ -7,8 +8,6 @@ from agents import (
     Runner,
     AsyncOpenAI,
     OpenAIChatCompletionsModel,
-    function_tool,
-    set_tracing_disabled
 )
 from agents.run import RunConfig
 import rich
@@ -36,10 +35,17 @@ async def main():
             temperature: float
             condition: str
             
+    class WeatherReport(TypedDict):
+            location: str
+            temperature: float
+            condition: str        
+                 
+            
     agent = Agent(  
             name=" WeatherAgent",
             instructions="You are a expert AI Agent.",
-            output_type=WeatherReport
+            output_type=WeatherReport,  # 👈 enforcing structured output 
+            output_type=list[WeatherReport]
         )
         
 
@@ -49,7 +55,7 @@ async def main():
             input= query,
             run_config = config
             )
-    print(result.final_output)
+    print("Structured Output:", result.final_output)
  
 if __name__ == "__main__":
     asyncio.run(main())
