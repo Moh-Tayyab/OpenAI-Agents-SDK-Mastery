@@ -12,6 +12,7 @@ from agents import (
     OpenAIChatCompletionsModel,
     set_tracing_disabled
 )
+from typing import TypedDict
 from agents.run import RunConfig
 from rich import print
 
@@ -37,7 +38,24 @@ config=RunConfig(
 # pydantic class
 class Is_Check(BaseModel):
     is_name: bool = Field(description = "if user name is avalabile it's value will be true otherwise false")
+# pydatic class not be wrapped
+class Is_Check(BaseModel):
+    is_name:str
 
+
+# dataclass would be wrapped
+@dataclass    
+class Is_Check():
+    is_name:str
+
+# no wrap will treat it like normal pydantic classes
+@dataclass    
+class Is_Check(BaseModel):
+    is_name:str
+
+# will not be wrapped
+class Is_Check(TypedDict):
+    is_name:str
     
 
 agent = Agent(  

@@ -12,13 +12,13 @@ async def main():
         raise ValueError("OpenAI Api key not found.")
     agent = Agent(
         name= "streaming_agent",
-        instructions = "Reply in short sentences.",
+        instructions = "You are a expert AI Agent.",
         model = "gpt-4o-mini",
     )
-    querry = input("Enter your querry: ")
+    query = input("user query: ")
     result = Runner.run_streamed(
         starting_agent = agent,
-        input = querry
+        input = query
     )
     
     async for event in result.stream_events():
