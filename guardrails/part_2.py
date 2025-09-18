@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from agents import (
     Agent, Runner, 
     GuardrailFunctionOutput, 
@@ -10,6 +10,7 @@ from agents import (
     OpenAIChatCompletionsModel
     
 )
+import rich
 from agents.run import RunConfig
 from dotenv import load_dotenv
 import os
@@ -17,66 +18,60 @@ import asyncio
 load_dotenv()
 
 async def main():
-    gemini_key = os.getenv("GEMINI_API_KEY")
-    if not gemini_key:
-        raise ValueError("api key not found.")
-    
-    client=AsyncOpenAI(
-        api_key=gemini_key,
-        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
-    )
-    
-    model=OpenAIChatCompletionsModel(model="gemini-2.0-flash", openai_client=client)
-    
-    config=RunConfig(
-        model=model,
-        model_provider=client
+    API_KEY=os.environ.get("GEMINI_API_KEY")
+    OPENAI_API_KEY=os.environ.get("OPENAI_API_KEY")
+
+    model=OpenAIChatCompletionsModel(
+        model="gemini-1.5-flash",
+        openai_client=AsyncOpenAI(
+            api_key=API_KEY,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         )
+    )
+
+    config=RunConfig(
+        model=model
+    ) 
     
 
     class bank_info(BaseModel):
-        account_num: str
+        account_num: str = Field(description="")
         rout_num: int
         amount: float
 
     # Global bank agent definition
     bank_agent = Agent(
         name="bank_info_agent",
-        instructions="You are a banking agent. You will collect bank information from users.",
+        instructions="You are a banking agent. You will collect bank information from users. if uers add invalid info to stop it.",
         model="gpt-4o-mini",
         output_type=bank_info
     )
-
+    
     @input_guardrail
-    async def bank_guardrail(
-        ctx: RunContextWrapper[None],
-        bank_agent: Agent,
-        input: str | list[TResponseInputItem]
-    ) -> GuardrailFunctionOutput:
+    async def bank_info_check(ctx: RunContextWrapper, agent: Agent, input: str | list[TResponseInputItem])-> GuardrailFunctionOutput:
         
-        result = await Runner.run(
+        guardrail_result = await Runner.run(
             bank_agent,
             input,
-            context=ctx.context
+            context=ctx
         )
-        
-        return GuardrailFunctionOutput(
-            output_info=result.final_output,
-            tripwire_triggered=result.final_output.account_num
-        )
+        return  GuardrailFunctionOutput(
+            output_info = guardrail_result.final_output,
+            tripwire_triggered = guardrail_result.final_output.bank_info
+        ) 
 
     # Customer service agent with guardrail
     customer_service_agent = Agent(
         name="customer_service_agent",
         instructions="You are a customer service agent. You will assist users with their banking issues.",
         model="gpt-4o-mini",
-        input_guardrails=[bank_guardrail]
+        input_guardrails=[bank_info_check]
     )  
 
 
     try:
             result = await Runner.run(
-                starting_agent = customer_service_agent,
+            starting_agent = customer_service_agent,
             input= "Help me with my bank account. My account number is 000000000 and routing number is 123456789. I want to transfer $1000.",
             run_config = config
             )
