@@ -8,7 +8,6 @@ import asyncio
 load_dotenv()
 set_tracing_disabled(disabled=True)
 
-
 gemini_key = os.getenv("GEMINI_API_KEY")
 if not gemini_key:
 	raise ValueError("api key is not found")

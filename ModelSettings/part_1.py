@@ -19,7 +19,7 @@ import os
 
 load_dotenv()
 
-#enable_verbose_stdout_logging()
+enable_verbose_stdout_logging()
 
 
 
