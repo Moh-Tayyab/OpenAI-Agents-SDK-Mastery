@@ -47,7 +47,7 @@ teacher_agent = Agent(
     
 # function is required in InputGuardrails
 @input_guardrail
-async def check_teacher(ctx: RunContextWrapper, agent: Agent, input: str | list[TResponseInputItem]) -> GuardrailFunctionOutput:
+async def check_teacher(ctx: RunContextWrapper[None], agent: Agent, input: str | list[TResponseInputItem]) -> GuardrailFunctionOutput:
     teacher_result = await Runner.run(
         teacher_agent,
         input,
@@ -55,7 +55,7 @@ async def check_teacher(ctx: RunContextWrapper, agent: Agent, input: str | list[
     )
     return GuardrailFunctionOutput(
         output_info= teacher_result.final_output,
-        tripwire_triggered = teacher_agent.final_out.is_teacher
+        tripwire_triggered = teacher_result.final_output.is_teacher
     )
 # function is required in InputGuardrail 
 # @input_guardrail
@@ -68,7 +68,7 @@ async def check_teacher(ctx: RunContextWrapper, agent: Agent, input: str | list[
 #     )
 agent = Agent(  
     name="Guardrail Agent",
-    instructions="You are a customer support agent. You help customers with their questions.",
+    instructions="You are a helpful assistant.",
     input_guardrails=[check_teacher],
     model=model
 )
@@ -81,7 +81,7 @@ agent = Agent(
 # )
 
 async def main():
-    query=input
+    query=input("user query: ")
     try:
         result = await Runner.run(agent, input=query, run_config=config)
         print(result.final_output)

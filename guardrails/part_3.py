@@ -44,7 +44,7 @@ async def main():
 	)
 
 	@output_guardrail
-	async def check_president(ctx: RunContextWrapper, agent: Agent, output: Any) -> GuardrailFunctionOutput:
+	async def check_president(ctx: RunContextWrapper[None], agent: Agent, output: Any) -> GuardrailFunctionOutput:
 		guardrail_result = await Runner.run(
 			guardrail_agent,
 			output,
