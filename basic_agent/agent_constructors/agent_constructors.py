@@ -68,7 +68,7 @@ async def main():
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
     )
 )
-
+    
     config = RunConfig(
 	 model=model
 )
