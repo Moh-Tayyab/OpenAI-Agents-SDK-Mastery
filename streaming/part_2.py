@@ -7,13 +7,9 @@
 
 from pydantic import BaseModel, Field
 from agents import Agent, Runner, enable_verbose_stdout_logging, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel
-
 from dotenv import load_dotenv
-
 from agents.run import RunConfig
-
 import asyncio, os
-
 from openai.types.responses import ResponseTextDeltaEvent
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -43,33 +39,12 @@ async def main():
 	config = RunConfig(
 		model=model,
 	)
-	
-	@function_tool(name_override = "weather")
-	async def fetch_data() -> str:
-		try:
-			
-			# Connect to MongoDB
-			client = AsyncIOMotorClient(MONGODB_DB)
-			db = client.weather_db
-			collection = db.weather_data
-			
-			# Fetch the latest weather data
-			weather_data = await collection.find_one({}, sort=[('timestamp', -1)])
-			
-			if weather_data:
-				return f"Weather data: Temperature: {weather_data.get('temperature')}°C, Humidity: {weather_data.get('humidity')}%"
-			else:
-				return "No weather data found in database"
 				
-		except Exception as e:
-			return f"Fallback: Sorry, weather data not available right now. ({str(e)})"
-
-	
 	agent = Agent(
 		name="tool_streeaming_agent",
 		instructions="you are a helful assistant",
 		model="gpt-4o-mini",
-		tools=[fetch_data]
+		tools=[]
 	)
 	
 	query = input("user querry: ")
