@@ -8,9 +8,7 @@ from agents import (
     input_guardrail,
     AsyncOpenAI,
     OpenAIChatCompletionsModel,
-    ModelSettings
-    
-)
+    ModelSettings)
 import rich
 from agents.run import RunConfig
 from dotenv import load_dotenv
@@ -28,12 +26,10 @@ async def main():
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         )
     )
-
+    
     config=RunConfig(
         model=model
     ) 
-    
-
     class Bank_Info(BaseModel): # 7 bank_info
         account_num: str = Field(description="")
         rout_num: int
@@ -58,7 +54,7 @@ async def main():
         return  GuardrailFunctionOutput(
             output_info = guardrail_result.final_output, # 9 output_info
             tripwire_triggered =  len(guardrail_result.final_output.account_num) >= 10 
-            #tripwire_triggered = False # True/False # 10 tripwire_triggered  
+            # tripwire_triggered = False # True/False # 10 tripwire_triggered  
         ) 
 
     # Customer service agent with guardrail
@@ -72,7 +68,6 @@ async def main():
         )
     )  
 
-
     try: 
     # 10 result   
         result = await Runner.run(
@@ -85,8 +80,7 @@ async def main():
         print("❌ 🚨 Tripwire triggered!", e)
         #print("Final Output:", e.guardrail_result.final_output.output_info)  # ✅
         #print("Tripwire Value:", e.guardrail_result.tripwire_triggered)      # ✅
-
-        
+   
     print(result.final_output) # 11 final_output
     
 if __name__ == "__main__":
