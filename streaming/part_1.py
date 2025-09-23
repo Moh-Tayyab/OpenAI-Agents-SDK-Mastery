@@ -3,15 +3,10 @@
 # in this example i will show how you handle streaming error with tools and in streaming response
 
 from agents import Agent, Runner, enable_verbose_stdout_logging, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel
-
 from dotenv import load_dotenv
-
 from agents.run import RunConfig
-
 import asyncio, os
-
 from openai.types.responses import ResponseTextDeltaEvent
-
 
 load_dotenv()
 #enable_verbose_stdout_logging()
@@ -23,7 +18,6 @@ async def main():
 	AsyncOpenAI(
 		api_key=API_KEy,
 		base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-	
 	)
 	
 	model = OpenAIChatCompletionsModel(

@@ -13,11 +13,9 @@ async def main():
     API_KEy = os.environ.get("GEMINI_API_KEY")
     OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 	
- 
     AsyncOpenAI(
 		api_key=API_KEy,
 		base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-	
 	)
 	
     model = OpenAIChatCompletionsModel(

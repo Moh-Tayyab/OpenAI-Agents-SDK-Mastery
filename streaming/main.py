@@ -6,7 +6,7 @@ import os
 from rich import print
 load_dotenv()
 
-enable_verbose_stdout_logging()
+# enable_verbose_stdout_logging()
 
 async def main():
     API_KEY = os.getenv("OPENAI_API_KEY")
