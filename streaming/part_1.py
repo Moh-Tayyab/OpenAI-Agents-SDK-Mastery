@@ -9,7 +9,7 @@ import asyncio, os
 from openai.types.responses import ResponseTextDeltaEvent
 
 load_dotenv()
-#enable_verbose_stdout_logging()
+# enable_verbose_stdout_logging()
 
 async def main():
 	API_KEy = os.environ.get("GEMINI_API_KEY")

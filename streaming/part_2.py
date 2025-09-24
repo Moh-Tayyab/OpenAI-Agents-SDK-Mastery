@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 from agents.run import RunConfig
 import asyncio, os
 from openai.types.responses import ResponseTextDeltaEvent
-from motor.motor_asyncio import AsyncIOMotorClient
 
 
 load_dotenv()
