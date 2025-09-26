@@ -54,20 +54,20 @@ def my_custom_error_function(context: RunContextWrapper, error: Exception) -> st
     return "An internal server error occurred. Please try again later."
 
 # --- 4) tools exposed to the agent ---
-# @function_tool
-# async def register_user(input: UserRegistrationInput) -> str:
-#     # NOTE: DO NOT store or log the plaintext password in production.
-#     # Instead: hash the password and store user record in DB asynchronously.
-#     # Example (pseudo):
-#     # hashed = await async_hash_password(input.password)
-#     # user_id = await db.create_user(username=input.username, password=hashed, contact=input.contact.dict())
-#     return (
-#         f"User '{input.username}' registered successfully "
-#         f"(email={input.contact.email}, phone={input.contact.phone})"
-#     )
+@function_tool
+async def register_user(input: UserRegistrationInput) -> str:
+    # NOTE: DO NOT store or log the plaintext password in production.
+    # Instead: hash the password and store user record in DB asynchronously.
+    # Example (pseudo):
+    # hashed = await async_hash_password(input.password)
+    # user_id = await db.create_user(username=input.username, password=hashed, contact=input.contact.dict())
+    return (
+        f"User '{input.username}' registered successfully "
+        f"(email={input.contact.email}, phone={input.contact.phone})"
+    )
 from models import SessionLocal, User
 
-@function_tool
+@function_tool(name_override="user")
 async def register_user(input: UserRegistrationInput):
     session = SessionLocal()
     try:
@@ -101,6 +101,7 @@ async def main():
             "You are an agent that helps with user registration and profile retrieval. "
             "Use the provided tools (register_user, get_user_profile) to fulfil user requests."
         ),
+        
         model=model,
         tools=[register_user, get_user_profile],
     )
