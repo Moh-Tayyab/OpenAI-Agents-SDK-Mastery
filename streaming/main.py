@@ -1,5 +1,5 @@
 import asyncio 
-from agents import Agent, Runner, enable_verbose_stdout_logging, function_tool 
+from agents import Agent, Runner,function_tool 
 from openai.types.responses import ResponseTextDeltaEvent
 from dotenv import load_dotenv
 import os

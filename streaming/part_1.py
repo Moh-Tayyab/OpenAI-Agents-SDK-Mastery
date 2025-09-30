@@ -2,7 +2,7 @@
 # streaming/part_1.py
 # in this example i will show how you handle streaming error with tools and in streaming response
 
-from agents import Agent, Runner, enable_verbose_stdout_logging, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel
+from agents import Agent, Runner, function_tool, AsyncOpenAI, OpenAIChatCompletionsModel
 from dotenv import load_dotenv
 from agents.run import RunConfig
 import asyncio, os
