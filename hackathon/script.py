@@ -104,7 +104,7 @@ async def main():
                     empty_line_count += 1
                     if empty_line_count >= 2:
                         break
-                
+                else:
                     empty_line_count = 0
                     conversation_lines.append(line)
             
